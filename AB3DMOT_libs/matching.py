@@ -15,7 +15,7 @@ def compute_affinity(dets, trks, metric, trk_inv_inn_matrices=None):
 	'''
 
 	aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
-	alpha = 0.5
+	alpha = 0.25
 	for d, det in enumerate(dets):
 		for t, trk in enumerate(trks):
 			

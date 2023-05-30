@@ -423,7 +423,7 @@ class AB3DMOT(object):
 		############################ OUR contribution ######################################################################
 		# Load saved embeddings
 		dets_embeddings = []
-		video_path = os.path.join("embeddings_test_split", seq_name, f"frame_{frame}.txt")
+		video_path = os.path.join("embeddings_val", seq_name, f"frame_{frame}.txt")
 		with open(video_path, "r") as file:
 			rows = file.readlines()
 		for row in rows:

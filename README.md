@@ -1,6 +1,8 @@
 # 3D Multi-Object-Tracking group 42
 
 <b>3D Multi-Object Tracking: for DLAV CIVIL-459 by Johan Lagerby and Axel Englund</b>
+Built upon [AB3DMOT](https://github.com/xinshuoweng/AB3DMOT) and using [DINOv2](https://github.com/facebookresearch/dinov2) for extracting visual features for tracking.
+
 ## Install
 clone the code:
 ~~~shell
@@ -26,6 +28,8 @@ Please add the path to the code to your PYTHONPATH in order to load the library 
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT/Xinshuo_PyToolbox
 ```
+
+
 <!-- # AB3DMOT
 
 <!-- <b>3D Multi-Object Tracking: A Baseline and New Evaluation Metrics (IROS 2020, ECCVW 2020)</b>
