@@ -17,7 +17,7 @@ np.set_printoptions(suppress=True, precision=3)
 
 # A Baseline of 3D Multi-Object Tracking
 class AB3DMOT(object):			  	
-	def __init__(self, cfg, cat, calib=None, oxts=None, img_dir=None, vis_dir=None, hw=None, log=None, ID_init=0, get_embeddings=False):                    
+	def __init__(self, cfg, cat, calib=None, oxts=None, img_dir=None, vis_dir=None, hw=None, log=None, ID_init=0, get_embeddings=False, alpha=0.5):                    
 
 		# vis and log purposes
 		self.img_dir = img_dir
@@ -51,7 +51,7 @@ class AB3DMOT(object):
 			print(f"ON DEVICE: {self.device} \n")
 			self.dinov2 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitl14').to(self.device)
 			self.dinov2.eval()
-		self.alpha = 1
+		self.alpha = alpha
 		# debug
 		#self.debug_id = 2
 		self.debug_id = None

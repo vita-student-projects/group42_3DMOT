@@ -36,6 +36,8 @@ def main_per_cat(cfg, cat, log, ID_start):
 	seq_count = 0
 	total_time, total_frames = 0.0, 0
 	video = 0
+	alpha = 1
+	print(f"RUNNING WITH ALPHA = {alpha}")
 	for seq_name in seq_eval:
 		seq_file = os.path.join(det_root, seq_name+'.txt')
 		seq_dets, flag = load_detection(seq_file) 				# load detection
@@ -47,7 +49,7 @@ def main_per_cat(cfg, cat, log, ID_start):
 
 		# initialize tracker
 		save_embedding_flag = False
-		tracker, frame_list = initialize(cfg, trk_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log, save_embedding_flag)
+		tracker, frame_list = initialize(cfg, trk_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log, save_embedding_flag, alpha)
 		
 		# loop over frame
 		min_frame, max_frame = int(frame_list[0]), int(frame_list[-1])

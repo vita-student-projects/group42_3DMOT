@@ -13,7 +13,8 @@ def compute_affinity(dets, trks, metric, alpha, trk_inv_inn_matrices=None):
 
 	Returns affinity matrix
 	'''
-
+	print(alpha)
+	assert 0>1
 	aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
 	for d, det in enumerate(dets):
 		for t, trk in enumerate(trks):
