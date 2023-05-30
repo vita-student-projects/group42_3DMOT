@@ -1,8 +1,31 @@
 # 3D Multi-Object-Tracking group 42
 
 <b>3D Multi-Object Tracking: for DLAV CIVIL-459 by Johan Lagerby and Axel Englund</b>
+## Install
+clone the code:
+~~~shell
+git clone https://github.com/vita-student-projects/group42_3DMOT.git
+~~~
+To install required dependencies on the virtual environment of the python, please run the following command at the root of this code:
 
+```
+pip3 install venv
+python3 -m venv env
+source env/bin/activate
+pip3 install -r requirements.txt
+```
+Additionally, this code depends on the authors toolbox: https://github.com/xinshuoweng/Xinshuo_PyToolbox. Please install the toolbox by:
 
+*1. Clone the github repository.*
+~~~shell
+git clone https://github.com/xinshuoweng/Xinshuo_PyToolbox
+~~~
+
+Please add the path to the code to your PYTHONPATH in order to load the library appropriately. For example, if the code is located at /home/user/workspace/code/AB3DMOT, please add the following to your ~/.profile:
+```
+export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/AB3DMOT
+export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/AB3DMOT/Xinshuo_PyToolbox
+```
 <!-- # AB3DMOT
 
 <!-- <b>3D Multi-Object Tracking: A Baseline and New Evaluation Metrics (IROS 2020, ECCVW 2020)</b>
