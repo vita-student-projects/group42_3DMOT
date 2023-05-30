@@ -13,18 +13,16 @@ def compute_affinity(dets, trks, metric, alpha, trk_inv_inn_matrices=None):
 
 	Returns affinity matrix
 	'''
-	print(alpha)
-	assert 0>1
 	aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
 	for d, det in enumerate(dets):
 		for t, trk in enumerate(trks):
-			
 			# choose to use different distance metrics
-			if 'iou' in metric:    	  dist_now = (1-alpha)*iou(det, trk, metric) + alpha*reID(det, trk)      
+			if 'iou' in metric:    	  dist_now = (1-alpha)*iou(det, trk, metric) + alpha*reID(det, trk)   
+			# Below is not needed for our contribution    
 			#elif metric == 'm_dis':  dist_now = -((1-alpha)*m_distance(det, trk, trk_inv_inn_matrices[t]) + alpha*reID(det, trk))
 			#elif metric == 'euler':   dist_now = -((1-alpha)*m_distance(det, trk, None) + alpha*reID(det, trk))
 			#elif metric == 'dist_2d': dist_now = -((1-alpha)*dist_ground(det, trk) + alpha*reID(det, trk)) 
-			elif metric == 'dist_3d': dist_now = -((1-alpha)*dist3d(det, trk) + alpha * (1 - reID(det, trk)) * 50) 	#(1 - x) * 100 / 2
+			elif metric == 'dist_3d':	dist_now = -((1-alpha)*dist3d(det, trk) + alpha * (1 - reID(det, trk)) * 50) 	#(1 - x) * 100 / 2
 			else: assert False, 'error'
 			
 			aff_matrix[d, t] = dist_now

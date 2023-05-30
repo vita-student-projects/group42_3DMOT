@@ -11,12 +11,18 @@ from xinshuo_io import mkdir_if_missing, save_txt_file
 from xinshuo_miscellaneous import get_timestring, print_log
 
 def parse_args():
+    
     parser = argparse.ArgumentParser(description='AB3DMOT')
     parser.add_argument('--dataset', type=str, default='nuScenes', help='KITTI, nuScenes')
     parser.add_argument('--split', type=str, default='', help='train, val, test')
     parser.add_argument('--det_name', type=str, default='', help='pointrcnn')
+    parser.add_argument('--get_embeddings', action='store_true', help='Flag to indicate getting embeddings')
+    parser.add_argument('--alpha', type=float, default=0.5, help='Alpha value in the range [0, 1]')
     args = parser.parse_args()
+    if not 0 <= args.alpha <= 1:
+	    raise argparse.ArgumentTypeError("Alpha value must be in the range [0, 1]")
     return args
+
 
 def main_per_cat(cfg, cat, log, ID_start):
 
@@ -36,8 +42,8 @@ def main_per_cat(cfg, cat, log, ID_start):
 	seq_count = 0
 	total_time, total_frames = 0.0, 0
 	video = 0
-	alpha = 1
-	print(f"RUNNING WITH ALPHA = {alpha}")
+	#alpha = 1
+	print(f"RUNNING WITH ALPHA = {cfg.alpha}")
 	for seq_name in seq_eval:
 		seq_file = os.path.join(det_root, seq_name+'.txt')
 		seq_dets, flag = load_detection(seq_file) 				# load detection
@@ -48,8 +54,8 @@ def main_per_cat(cfg, cat, log, ID_start):
 			get_saving_dir(eval_dir_dict, seq_name, save_dir, cfg.num_hypo)	
 
 		# initialize tracker
-		save_embedding_flag = False
-		tracker, frame_list = initialize(cfg, trk_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log, save_embedding_flag, alpha)
+		
+		tracker, frame_list = initialize(cfg, trk_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log, cfg.save_embeddings, cfg.alpha)
 		
 		# loop over frame
 		min_frame, max_frame = int(frame_list[0]), int(frame_list[-1])
@@ -65,8 +71,7 @@ def main_per_cat(cfg, cat, log, ID_start):
 			# tracking by detection
 			dets_frame = get_frame_det(seq_dets, frame)
 			since = time.time()
-
-			if save_embedding_flag:
+			if cfg.save_embeddings:
 				tracker.save_embeddings(dets_frame, frame, seq_name) ###########
 				continue
 			
@@ -100,7 +105,7 @@ def main_per_cat(cfg, cat, log, ID_start):
 			total_frames += 1
 		seq_count += 1
 		# video += 1
-		if not save_embedding_flag:
+		if not cfg.save_embeddings:
 			for index in range(cfg.num_hypo): 
 				eval_file_dict[index].close()
 				ID_start = max(ID_start, tracker.ID_count[index])
@@ -115,11 +120,12 @@ def main(args):
 
 	# load config files
 	config_path = './configs/%s.yml' % args.dataset
-	cfg, settings_show = Config(config_path)
+	cfg, settings_show = Config(config_path, args)
 
 	# overwrite split and detection method
 	if args.split != '': cfg.split = args.split
 	if args.det_name != '': cfg.det_name = args.det_name
+	if args.get_embeddings: cfg.save_embeddings = True
 
 	# print configs
 	time_str = get_timestring()

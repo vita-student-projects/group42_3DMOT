@@ -45,13 +45,12 @@ class AB3DMOT(object):
 		#dinov2_vits14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
 		#dinov2_vitb14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
 		#dinov2_vitl14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitl14')
-		
-		if get_embeddings:
+		if cfg.save_embeddings:
 			self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 			print(f"ON DEVICE: {self.device} \n")
 			self.dinov2 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitl14').to(self.device)
 			self.dinov2.eval()
-		self.alpha = alpha
+		self.alpha = cfg.alpha
 		# debug
 		#self.debug_id = 2
 		self.debug_id = None
@@ -504,7 +503,6 @@ class AB3DMOT(object):
 		################## OUR contribution ############################################################################
 		img_path = os.path.join(self.img_dir, f'{frame:06d}.png')
 		img = Image.open(img_path)
-
 		def _save_embeddings(seq_name, frame, embeddings):
 			folder_path = os.path.join("embeddings_val1", seq_name)
 			os.makedirs(folder_path, exist_ok=True)
