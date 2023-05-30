@@ -2,13 +2,19 @@
 
 <b>3D Multi-Object Tracking: for DLAV CIVIL-459 by Johan Lagerby and Axel Englund</b>
 Built upon [AB3DMOT](https://github.com/xinshuoweng/AB3DMOT) and using [DINOv2](https://github.com/facebookresearch/dinov2) for extracting visual features for tracking.
+## System Requirements
+
+This code has only been tested on the following combination of major pre-requisites. Please check beforehand.
+
+* Ubuntu 18.04
+* Python 3.7.7
 
 ## Install
-clone the code:
+Clone the code:
 ~~~shell
 git clone https://github.com/vita-student-projects/group42_3DMOT.git
 ~~~
-To install required dependencies on the virtual environment of the python, please run the following command at the root of this code:
+To install the required dependencies on the virtual environment of the python, please run the following command at the root of this code:
 
 ```
 pip3 install venv
@@ -29,6 +35,53 @@ export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT/Xinshuo_PyToolbox
 ```
 
+~~~shell
+python3 main.py --dataset KITTI --det_name pointrcnn --get_embeddings 
+~~~
+
+~~~shell
+python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
+~~~
+
+
+#### PointRCNN + AB3DMOT (KITTI val set)
+
+Results evaluated with the 0.25 3D IoU threshold:
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 93.34  | 86.47  |  79.40 |  0  | 15   | 368  | 766  | 108.7
+ *Pedestrian*   | 82.73  | 73.86  |  67.58 |  4  | 62   | 589  | 1965 | 119.2
+ *Cyclist*      | 93.78  | 84.79  |  77.23 |  1  | 3    | 114  | 90   | 980.7
+ *Overall*      | 89.62  | 81.71  |  74.74 |  5  | 80   | 1071 | 2821 | -
+
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 0.25
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 93.14  | 86.25  |  79.30 |  0  | 19   | 385  | 767  | -
+ *Pedestrian*   | 69.41  | 63.65  |  66.66 |  6  | 163  | 585  | 2967 | -
+ *Cyclist*      | 46.26  | 39.09  |  78.50 |  31 | 54   | 74   | 716  | -
+ *Overall*      | 69.60  | 62.99  |  74.82 |  37 | 236  | 1044 | 5217 | -
+
+
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 0.5
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 91.18  | 81.98  |  77.39 |  1  | 38   | 668  | 841  | -
+ *Pedestrian*   | 50.16  | 39.97  |  65.04 |  14 | 227  | 1148 | 4713 | -
+ *Cyclist*      | 28.63  | 22.85  |  79.02 |  15 | 31   | 38   | 987  | -
+ *Overall*      | 67.51  | 48.27  |  73.82 |  30 | 296  | 2925 | 6541 | -
+
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 1
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 78.53  | 69.52  |  75.08 |  21 | 94   | 1237 | 1296 | -
+ *Pedestrian*   | 0.57   | 0.57   |  53.98 |  9  | 39   | 1148 | 4713 | -
+ *Cyclist*      | 6.18   | 4.60   |  81.89 |  5  | 8    | 172  | 9550 | -
+ *Overall*      | 28.43  | 24.89  |  70.32 |  35 | 141  | 2557 | 15559| -
 
 <!-- # AB3DMOT
 
