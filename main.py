@@ -11,6 +11,7 @@ from xinshuo_io import mkdir_if_missing, save_txt_file
 from xinshuo_miscellaneous import get_timestring, print_log
 
 def parse_args():
+    
     parser = argparse.ArgumentParser(description='AB3DMOT')
     parser.add_argument('--dataset', type=str, default='nuScenes', help='KITTI, nuScenes')
     parser.add_argument('--split', type=str, default='', help='train, val, test')
@@ -21,6 +22,7 @@ def parse_args():
     if not 0 <= args.alpha <= 1:
 	    raise argparse.ArgumentTypeError("Alpha value must be in the range [0, 1]")
     return args
+
 
 def main_per_cat(cfg, cat, log, ID_start):
 

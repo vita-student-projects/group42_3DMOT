@@ -11,17 +11,17 @@ from AB3DMOT_libs.nuScenes_split import get_split
 from xinshuo_io import mkdir_if_missing, is_path_exists, fileparts, load_list_from_folder
 from xinshuo_miscellaneous import merge_listoflist
 
-def Config(filename, args):
+def Config(filename, args=None):
     listfile1 = open(filename, 'r')
     listfile2 = open(filename, 'r')
     cfg = edict(yaml.safe_load(listfile1))
     settings_show = listfile2.read().splitlines()
     cfg.save_embeddings = False
-    cfg.alpha = args.alpha
-    listfile1.close()
-    listfile2.close()
-
-    return cfg, settings_show
+    if args:
+	    cfg.alpha = args.alpha
+	listfile1.close()
+	listfile2.close()
+	return cfg, settings_show
 
 def get_subfolder_seq(dataset, split):
 
