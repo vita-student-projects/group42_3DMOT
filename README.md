@@ -21,10 +21,10 @@ Additionally, this code depends on the authors toolbox: https://github.com/xinsh
 git clone https://github.com/xinshuoweng/Xinshuo_PyToolbox
 ~~~
 
-Please add the path to the code to your PYTHONPATH in order to load the library appropriately. For example, if the code is located at /home/user/workspace/code/AB3DMOT, please add the following to your ~/.profile:
+Please add the path to the code to your PYTHONPATH in order to load the library appropriately. For example, if the code is located at /home/user/workspace/code/group42_3DMOT, please add the following to your ~/.profile:
 ```
-export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/AB3DMOT
-export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/AB3DMOT/Xinshuo_PyToolbox
+export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT
+export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT/Xinshuo_PyToolbox
 ```
 <!-- # AB3DMOT
 
