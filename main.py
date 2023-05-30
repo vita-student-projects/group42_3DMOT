@@ -46,7 +46,8 @@ def main_per_cat(cfg, cat, log, ID_start):
 			get_saving_dir(eval_dir_dict, seq_name, save_dir, cfg.num_hypo)	
 
 		# initialize tracker
-		tracker, frame_list = initialize(cfg, trk_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log)
+		save_embedding_flag = False
+		tracker, frame_list = initialize(cfg, trk_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log, save_embedding_flag)
 		
 		# loop over frame
 		min_frame, max_frame = int(frame_list[0]), int(frame_list[-1])
@@ -63,10 +64,10 @@ def main_per_cat(cfg, cat, log, ID_start):
 			dets_frame = get_frame_det(seq_dets, frame)
 			since = time.time()
 
-			save_embedding_flag = False
 			if save_embedding_flag:
 				tracker.save_embeddings(dets_frame, frame, seq_name) ###########
 				continue
+			
 			results, affi = tracker.track(dets_frame, frame, seq_name)		###################
 			total_time += time.time() - since
 
