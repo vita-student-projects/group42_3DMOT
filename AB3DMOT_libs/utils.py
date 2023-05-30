@@ -11,12 +11,13 @@ from AB3DMOT_libs.nuScenes_split import get_split
 from xinshuo_io import mkdir_if_missing, is_path_exists, fileparts, load_list_from_folder
 from xinshuo_miscellaneous import merge_listoflist
 
-def Config(filename):
+def Config(filename, args):
     listfile1 = open(filename, 'r')
     listfile2 = open(filename, 'r')
     cfg = edict(yaml.safe_load(listfile1))
     settings_show = listfile2.read().splitlines()
-
+    cfg.save_embeddings = False
+    cfg.alpha = args.alpha
     listfile1.close()
     listfile2.close()
 
@@ -99,7 +100,7 @@ def initialize(cfg, data_root, save_dir, subfolder, seq_name, cat, ID_start, hw,
 	if cfg.num_hypo > 1:
 		tracker = AB3DMOT_multi(cfg, cat, calib=calib, oxts=imu_poses, img_dir=img_seq, vis_dir=vis_dir, hw=hw, log=log_file, ID_init=ID_start) 
 	elif cfg.num_hypo == 1:
-		tracker = AB3DMOT(cfg, cat, calib=calib, oxts=imu_poses, img_dir=img_seq, vis_dir=vis_dir, hw=hw, log=log_file, ID_init=ID_start, get_embeddings=get_embeddings, alpha=alpha) 
+		tracker = AB3DMOT(cfg, cat, calib=calib, oxts=imu_poses, img_dir=img_seq, vis_dir=vis_dir, hw=hw, log=log_file, ID_init=ID_start, alpha=alpha) 
 	else: assert False, 'error'
 	
 	# compute the min/max frame
