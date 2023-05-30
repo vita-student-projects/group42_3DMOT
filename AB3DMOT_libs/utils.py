@@ -75,7 +75,7 @@ def get_threshold(dataset, det_name):
 		else: assert False, 'error, detection method not supported for getting threshold' % det_name
 	else: assert False, 'error, dataset %s not supported for getting threshold' % dataset
 
-def initialize(cfg, data_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log_file):
+def initialize(cfg, data_root, save_dir, subfolder, seq_name, cat, ID_start, hw, log_file, get_embeddings):
 	# initialize the tracker and provide all path of data needed
 
 	oxts_dir  = os.path.join(data_root, subfolder, 'oxts')
@@ -99,7 +99,7 @@ def initialize(cfg, data_root, save_dir, subfolder, seq_name, cat, ID_start, hw,
 	if cfg.num_hypo > 1:
 		tracker = AB3DMOT_multi(cfg, cat, calib=calib, oxts=imu_poses, img_dir=img_seq, vis_dir=vis_dir, hw=hw, log=log_file, ID_init=ID_start) 
 	elif cfg.num_hypo == 1:
-		tracker = AB3DMOT(cfg, cat, calib=calib, oxts=imu_poses, img_dir=img_seq, vis_dir=vis_dir, hw=hw, log=log_file, ID_init=ID_start) 
+		tracker = AB3DMOT(cfg, cat, calib=calib, oxts=imu_poses, img_dir=img_seq, vis_dir=vis_dir, hw=hw, log=log_file, ID_init=ID_start, get_embeddings=get_embeddings) 
 	else: assert False, 'error'
 	
 	# compute the min/max frame

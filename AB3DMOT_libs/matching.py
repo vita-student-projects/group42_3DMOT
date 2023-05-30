@@ -3,7 +3,7 @@ from numba import jit
 from scipy.optimize import linear_sum_assignment
 from AB3DMOT_libs.dist_metrics import iou, dist3d, dist_ground, m_distance, reID
 
-def compute_affinity(dets, trks, metric, trk_inv_inn_matrices=None):
+def compute_affinity(dets, trks, metric, alpha, trk_inv_inn_matrices=None):
 	'''
 	  compute affinity matrix
 	  	dets: a list of Box3D object
@@ -15,7 +15,6 @@ def compute_affinity(dets, trks, metric, trk_inv_inn_matrices=None):
 	'''
 
 	aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
-	alpha = 0.25
 	for d, det in enumerate(dets):
 		for t, trk in enumerate(trks):
 			
@@ -58,7 +57,7 @@ def greedy_matching(cost_matrix):
 
     return np.asarray(matched_indices)
 
-def data_association(dets, trks, metric, threshold, algm='greedy', \
+def data_association(dets, trks, metric, threshold, alpha, algm='greedy', \
 	trk_innovation_matrix=None, hypothesis=1):   
 	"""
 	Assigns detections to tracked object
@@ -84,7 +83,7 @@ def data_association(dets, trks, metric, threshold, algm='greedy', \
 		trk_inv_inn_matrices = None
 
 	# compute affinity matrix
-	aff_matrix = compute_affinity(dets, trks, metric, trk_inv_inn_matrices)
+	aff_matrix = compute_affinity(dets, trks, metric, alpha, trk_inv_inn_matrices)
 
 	# association based on the affinity matrix
 	if hypothesis == 1:

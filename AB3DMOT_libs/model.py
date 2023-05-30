@@ -17,7 +17,7 @@ np.set_printoptions(suppress=True, precision=3)
 
 # A Baseline of 3D Multi-Object Tracking
 class AB3DMOT(object):			  	
-	def __init__(self, cfg, cat, calib=None, oxts=None, img_dir=None, vis_dir=None, hw=None, log=None, ID_init=0):                    
+	def __init__(self, cfg, cat, calib=None, oxts=None, img_dir=None, vis_dir=None, hw=None, log=None, ID_init=0, get_embeddings=False):                    
 
 		# vis and log purposes
 		self.img_dir = img_dir
@@ -46,11 +46,12 @@ class AB3DMOT(object):
 		#dinov2_vitb14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
 		#dinov2_vitl14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitl14')
 		
-		#self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-		#print(f"ON DEVICE: {self.device} \n")
-		#self.dinov2 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitl14').to(self.device)
-		#self.dinov2.eval()
-
+		if get_embeddings:
+			self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+			print(f"ON DEVICE: {self.device} \n")
+			self.dinov2 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitl14').to(self.device)
+			self.dinov2.eval()
+		self.alpha = 1
 		# debug
 		#self.debug_id = 2
 		self.debug_id = None
@@ -456,7 +457,7 @@ class AB3DMOT(object):
 		if self.metric == 'm_dis':
 			trk_innovation_matrix = [trk.compute_innovation_matrix() for trk in self.trackers] 
 		matched, unmatched_dets, unmatched_trks, cost, affi = \
-			data_association(dets, trks, self.metric, self.thres, self.algm, trk_innovation_matrix)
+			data_association(dets, trks, self.metric, self.thres, self.alpha, self.algm, trk_innovation_matrix)
 		# print_log('detections are', log=self.log, display=False)
 		# print_log(dets, log=self.log, display=False)
 		# print_log('tracklets are', log=self.log, display=False)
