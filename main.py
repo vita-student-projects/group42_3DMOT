@@ -19,8 +19,7 @@ def parse_args():
     parser.add_argument('--get_embeddings', action='store_true', help='Flag to indicate getting embeddings')
     parser.add_argument('--alpha', type=float, default=0.5, help='Alpha value in the range [0, 1]')
     args = parser.parse_args()
-    if not 0 <= args.alpha <= 1:
-	    raise argparse.ArgumentTypeError("Alpha value must be in the range [0, 1]")
+    if not 0 <= args.alpha <= 1:	raise argparse.ArgumentTypeError("Alpha value must be in the range [0, 1]")
     return args
 
 
