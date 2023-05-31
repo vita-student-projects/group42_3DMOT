@@ -134,7 +134,7 @@ Here is the results from this experiments:
 | johan2               |41.87|32.98|42.40|39.80| 0.00|34.97|
 | johan3               |36.87|46.45|32.29|44.77|34.97| 0.00|
 
-#### SEGMENT-ANYHTING-MODEL Cosine-Similarity (-1 to 1)
+#### SEGMENT-ANYTHING-MODEL Cosine-Similarity (-1 to 1)
 
 |        |axel1|axel2|axel3|johan1|johan2|johan3|
 |--------|:---:|:---:|:---:|:----:|:----:|:----:|
@@ -145,7 +145,7 @@ Here is the results from this experiments:
 | johan2 | 0.69| 0.81| 0.69| 0.78 | 1.00 | 0.65 |
 | johan3 | 0.76| 0.59| 0.75| 0.68 | 0.65 | 1.00 |
 
-#### SEGMENT-ANYHTING-MODEL Euclidean-Similarity
+#### SEGMENT-ANYTHING-MODEL Euclidean-Similarity
 
 |        |axel1|axel2|axel3|johan1|johan2|johan3|
 |--------|:---:|:---:|:---:|:----:|:----:|:----:|
