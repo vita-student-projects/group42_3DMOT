@@ -2,8 +2,13 @@
 
 <b>3D Multi-Object Tracking: for DLAV CIVIL-459 by Johan Lagerby and Axel Englund</b>
 Built upon [AB3DMOT](https://github.com/xinshuoweng/AB3DMOT) and using [DINOv2](https://github.com/facebookresearch/dinov2) for extracting visual features for tracking.
+AB3DMOT, the method we built our contribution into can be found here "[3D Multi-Object Tracking: A Baseline and New Evaluation Metrics](http://www.xinshuoweng.com/papers/AB3DMOT/proceeding.pdf)".
 
 <img src="our_viz.gif" alt="GIF Example" width="800" height="300">
+
+## Contribution Overview
+Our contribution is to add visual appearance re-identification to an existing mulitple 3D tracking algortihm that doesn't use visual feautres. We choose AB3DMOT ([paper](http://www.xinshuoweng.com/papers/AB3DMOT/proceeding.pdf)) as our baseline model from which we added a visual appearance functionality. To get the visual feautres from a detection, we use facebook research's visual deep model DINOv2 ([paper](https://arxiv.org/abs/2304.07193)). We calculate the similarity between detections and tracklets using the cosine similarity and uses that as cost/affinity. We then add a hyper-parameter $\alpha$ which controls the how much of our contribution to use in calculation of the cost matrix: 
+$$\text{Total cost} = (1-\alpha) \cdot \text{AB3DMOT cost} + \alpha \cdot \text{Our contribution cost}$$
 
 ## System Requirements
 
@@ -66,6 +71,8 @@ Frame |   Type  |   2D BBOX (x1, y1, x2, y2)  | Score |    3D BBOX (h, w, l, x, 
 
 For the embeddings (feature vectors) for the detections, we choose to generate these before we actually run the tracking. We opt for this approach to save time and avoid generating embeddings with each run. We submit jobs to the SCITAS cluster for this purpose and store the embeddings in .txt files (in either the "embeddings_val" or "embeddings_test_split" folder). As a result, this implementation functions as a batch process rather than real-time, although it could be run online if executed on a sufficiently powerful computer. However, the code would require some modifications in that case.
 
+# Data preprocessing (embedding generation)
+
 To save the embeddings from the KITTI dataset with the provided Point RCNN detections, run the following code. 
 WARNING: This part was run using cuda on the SCITAS cluster. Note that this requires alot of computing power.
 ~~~shell
@@ -77,24 +84,21 @@ python3 main.py --dataset KITTI --det_name pointrcnn --get_embeddings --split te
 ~~~
 to run the test split.
 
-Note that the embeddings for the KITTI MOT validation set with the provided PointRCNN detections and the test set with the provided PointRCNN detections have already been generated and can be found under "embeddings_val" and "embeddings_test_split" respectively. 
-In model.py we define the function that gathers the embeddings from the detections. Etc...
+NOTE: that the embeddings for the KITTI MOT validation set with the provided PointRCNN detections and the test set with the provided PointRCNN detections have already been generated and can be found under "embeddings_val" and "embeddings_test_split" respectively. 
 
-## Inference
+# Inference
 
 To run our tracker we follow the almost the same instructions as given by the author for AB3DMOT.
 
 NOTE: The evaluation of the results will be performed with a weighting alpha that is the ratio between using the metric from AB3DMOT and Dinov2. This ratio is between 0 and 1 depending on which part is contributing the most, 0 means the default AB3DMOT metric is used and 1 means only the Dinov2 metric is used.
 
-
-"To run our tracker on the KITTI MOT validation set with the provided PointRCNN detections."
+"To run our tracker on the KITTI MOT validation set with the provided PointRCNN detections." here with alpha = 0.5
 ~~~shell
 python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
 ~~~
 "In detail, running above command will generate a folder named "pointrcnn_val_H1" that includes results combined from all categories, and also folders named "pointrcnn_category_val_H1" representing results for each category. Under each result folder, "./data_0" subfolders are used for MOT evaluation, which follow the format of the KITTI Multi-Object Tracking Challenge (format definition can be found in the tracking development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_tracking.php). Also, "./trk_withid_0" subfolders are used for visualization only, which follow the format of KITTI 3D Object Detection challenge except that we add an ID in the last column."
 ### Results
 Before we decided to use DINOv2 for our visual feautre extraction. We examined the power of the feature representation of detections. We took 3 full-body pictures of two humans named Axel and Johan from different angles (these can be found under "experiments_im/), than ran these through two visual models: DINOv2 ([github](https://github.com/facebookresearch/dinov2), [paper](https://arxiv.org/abs/2304.07193)) and Segemet-Anything ([github](https://github.com/facebookresearch/segment-anything), [paper](https://ai.facebook.com/research/publications/segment-anything/)). Both are new (of this date 31/05-2023) deep learning models developed by Facebook-research. Segment-Anything is designed to be promptable and can transfer zero-shot to new image distributions and tasks. The DINOv2 paper however, explores the idea of all-purpose visual features in computer vision and proposes a self-supervised approach for pretraining on a large curated image dataset using a ViT (Vision Transformers) model. So at first glance the two seems to be good candidates for our task. After running our test images thorugh the models, we used two different metrics to evaluate the similiarty between the images - cosine similarity and the euclidean distance. Optimum would be good similarity between images depciting the same person and bad similarty scores between images that depict different persons.
-
 
 To get the same results run experiments.py - we ran this script locally and never tried running it on SCITAS. Furthermore, you need to [download](https://github.com/facebookresearch/segment-anything#model-checkpoints) weights for the Segment-anything model (we used [ViT-H SAM model](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)) and:
 
@@ -147,6 +151,8 @@ SEGMENT-ANYHTING-MODEL Euclidean-Similarity
 | johan2 |91.50|71.35|91.61|76.58 | 0.00 |96.73 |
 | johan3 |81.33|105.02|82.40|92.15 |96.73 | 0.00 |
 
+As seen in the tables, DINOv2 generated better embeddings since the cosine similarities were, in general, closer to each other for each respective image. Additionally, performing a forward pass with "Segment-Anything" takes considerably longer than with DINOv2. Hence, we choose DINOv2 for this implementation.
+
 #### PointRCNN + AB3DMOT (KITTI val set)
 
 Results evaluated with the 0.25 3D IoU threshold:
@@ -191,6 +197,17 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
  *Pedestrian*   | 0.57   | 0.57   |  53.98 |  9  | 39   | 172  | 9550 | -
  *Cyclist*      | 6.18   | 4.60   |  81.89 |  5  | 8    | 42   | 1239 | -
  *Overall*      | 28.43  | 24.89  |  70.32 |  35 | 141  | 1451 | 12085| -
+
+## Finally
+From the results we can say that our contribution ... TODO!!!
+
+We could probably improve the result if we fine-tuned the visual models on our dataset. This would be the natural next step. However, being new to projects of this magnitude, we initially found it difficult working on a project this size and to just implement the contributions we have made thus far. Another challenge has been working on SCITAS, both the author's personal computers run on windows, thus neither were epsecially comfortable in the beginning wokring on linux machines, and sending jobs to the clusters seemed almost impossible. Also adding the KITTI dataset to SCITAS seemed like quite a hassle in the beginning.
+
+However, we are feel that we have grown more comfortable and proficient with working on existing large-scale projects, working with remote connections on Linux systems, sending jobs to clusters, and managing substantial datasets. And if we would have done it again, we would probably start with fine-tuning a existing visual model. We would probably try a model with even stronger feature representations such as CLIP from OpenAI, and compare it with others. Additionally, we would try to make it truely online, and not pre-generte the embeddings before running the tracker.
+
+Despite the difficulties, we are proud of the progress we have achieved and the insights we have gained.
+
+
 
 <!-- # AB3DMOT
 
