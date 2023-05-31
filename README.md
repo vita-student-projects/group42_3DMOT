@@ -9,6 +9,15 @@ This code has only been tested on the following combination of major pre-requisi
 * Ubuntu 18.04
 * Python 3.7.7
 
+<img src="our_viz.gif" alt="GIF Example" width="800" height="300">
+
+## System Requirements
+
+This code has only been tested on the following combination of MAJOR pre-requisites. Please check beforehand. IMPORTANT!
+
+* Ubuntu 18.04
+* Python 3.7.7
+
 ## Install
 Clone the code:
 ~~~shell
@@ -34,6 +43,19 @@ Please add the path to the code to your PYTHONPATH in order to load the library 
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT/Xinshuo_PyToolbox
 ```
+## 3D Multi-Object Tracking
+TODO: Explain how we forward the embeddings of the detections in the script and store them.
+
+In model.py we define the function that gathers the embeddings from the detections. Etc...
+
+To save the embeddings from the KITTI dataset with the provided Point RCNN detections,run the following code. 
+WARNING: This part was run using cuda on the SCITAS cluster. Note that this requires alot of computing power.
+~~~shell
+python3 main.py --dataset KITTI --det_name pointrcnn --get_embeddings 
+~~~
+To run our tracker we follow the same instructions as given by the author for AB3DMOT.
+
+NOTE: The evaluation of the results will be performed with a weighting alpha that is the ratio between using the metric from AB3DMOT and Dinov2. This ratio is between 0 and 1 depending on which part is contributing the most, 0 means the default AB3DMOT metric is used and 1 means only the Dinov2 metric is used.
 
 ~~~shell
 python3 main.py --dataset KITTI --det_name pointrcnn --get_embeddings 
@@ -82,6 +104,102 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
  *Pedestrian*   | 0.57   | 0.57   |  53.98 |  9  | 39   | 1148 | 4713 | -
  *Cyclist*      | 6.18   | 4.60   |  81.89 |  5  | 8    | 172  | 9550 | -
  *Overall*      | 28.43  | 24.89  |  70.32 |  35 | 141  | 2557 | 15559| -
+
+"To run our tracker on the KITTI MOT validation set with the provided PointRCNN detections."
+~~~shell
+python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
+~~~
+"In detail, running above command will generate a folder named "pointrcnn_val_H1" that includes results combined from all categories, and also folders named "pointrcnn_category_val_H1" representing results for each category. Under each result folder, "./data_0" subfolders are used for MOT evaluation, which follow the format of the KITTI Multi-Object Tracking Challenge (format definition can be found in the tracking development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_tracking.php). Also, "./trk_withid_0" subfolders are used for visualization only, which follow the format of KITTI 3D Object Detection challenge except that we add an ID in the last column."
+### Results
+
+DINOV2 Cosine-Similarity (-1 to 1) 
+
+|                                  |axel1|axel2|axel3|johan1|johan2|johan3|
+|----------------------------------|:----:|:----:|:----:|:----:|:----:|:----:|
+| axel1                            | 1.00| 0.69| 0.88| 0.44| 0.58| 0.67|
+| axel2                            | 0.69| 1.00| 0.63| 0.45| 0.74| 0.48|
+| axel3                            | 0.88| 0.63| 1.00| 0.53| 0.57| 0.75|
+| johan1                           | 0.44| 0.45| 0.53| 1.00| 0.62| 0.52|
+| johan2                           | 0.58| 0.74| 0.57| 0.62| 1.00| 0.71|
+| johan3                           | 0.67| 0.48| 0.75| 0.52| 0.71| 1.00|
+
+DINOv2 Euclidean-Similarity
+
+|                      |axel1|axel2|axel3|johan1|johan2|johan3|
+|----------------------|:----:|:----:|:----:|:----:|:----:|:----:|
+| axel1                | 0.00|35.84|22.53|48.24|41.87|36.87|
+| axel2                |35.84| 0.00|39.57|47.87|32.98|46.45|
+| axel3                |22.53|39.57| 0.00|44.40|42.40|32.29|
+| johan1               |48.24|47.87|44.40| 0.00|39.80|44.77|
+| johan2               |41.87|32.98|42.40|39.80| 0.00|34.97|
+| johan3               |36.87|46.45|32.29|44.77|34.97| 0.00|
+
+SEGMENT-ANYHTING-MODEL Cosine-Similarity (-1 to 1)
+
+|        |axel1|axel2|axel3|johan1|johan2|johan3|
+|--------|:---:|:---:|:---:|:----:|:----:|:----:|
+| axel1  | 1.00| 0.64| 0.79| 0.74 | 0.69 | 0.76 |
+| axel2  | 0.64| 1.00| 0.63| 0.72 | 0.81 | 0.59 |
+| axel3  | 0.79| 0.63| 1.00| 0.73 | 0.69 | 0.75 |
+| johan1 | 0.74| 0.72| 0.73| 1.00 | 0.78 | 0.68 |
+| johan2 | 0.69| 0.81| 0.69| 0.78 | 1.00 | 0.65 |
+| johan3 | 0.76| 0.59| 0.75| 0.68 | 0.65 | 1.00 |
+
+SEGMENT-ANYHTING-MODEL Euclidean-Similarity
+
+|        |axel1|axel2|axel3|johan1|johan2|johan3|
+|--------|:---:|:---:|:---:|:----:|:----:|:----:|
+| axel1  | 0.00|98.73|74.74|84.41 |91.50 |81.33 |
+| axel2  |98.73| 0.00|100.17|86.96 |71.35 |105.02|
+| axel3  |74.74|100.17| 0.00|86.08 |91.61 |82.40 |
+| johan1 |84.41|86.96|86.08| 0.00 |76.58 |92.15 |
+| johan2 |91.50|71.35|91.61|76.58 | 0.00 |96.73 |
+| johan3 |81.33|105.02|82.40|92.15 |96.73 | 0.00 |
+
+#### PointRCNN + AB3DMOT (KITTI val set)
+
+Results evaluated with the 0.25 3D IoU threshold:
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 93.34  | 86.47  |  79.40 |  0  | 15   | 368  | 766  | 108.7
+ *Pedestrian*   | 82.73  | 73.86  |  67.58 |  4  | 62   | 589  | 1965 | 119.2
+ *Cyclist*      | 93.78  | 84.79  |  77.23 |  1  | 3    | 114  | 90   | 980.7
+ *Overall*      | 89.62  | 81.71  |  74.74 |  5  | 80   | 1071 | 2821 | -
+
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 0.25
+
+Results evaluated with the 0.25 3D IoU threshold with alpha = 0.25.
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 93.14  | 86.25  |  79.30 |  0  | 19   | 385  | 767  | -
+ *Pedestrian*   | 69.41  | 63.65  |  66.66 |  6  | 163  | 585  | 2967 | -
+ *Cyclist*      | 46.26  | 39.09  |  78.50 |  31 | 54   | 74   | 716  | -
+ *Overall*      | 69.60  | 62.99  |  74.82 |  37 | 236  | 1044 | 5217 | -
+
+
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 0.5
+
+Results evaluated with the 0.25 3D IoU threshold with alpha = 0.5.
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 91.18  | 81.98  |  77.39 |  1  | 38   | 668  | 841  | -
+ *Pedestrian*   | 50.16  | 39.97  |  65.04 |  14 | 227  | 1148 | 4713 | -
+ *Cyclist*      | 28.63  | 22.85  |  79.02 |  15 | 31   | 38   | 987  | -
+ *Overall*      | 67.51  | 48.27  |  73.82 |  30 | 296  | 1854 | 6541 | -
+
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 1
+
+Results evaluated with the 0.25 3D IoU threshold with alpha = 1.
+
+Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
+--------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
+ *Car*          | 78.53  | 69.52  |  75.08 |  21 | 94   | 1237 | 1296 | -
+ *Pedestrian*   | 0.57   | 0.57   |  53.98 |  9  | 39   | 172  | 9550 | -
+ *Cyclist*      | 6.18   | 4.60   |  81.89 |  5  | 8    | 42   | 1239 | -
+ *Overall*      | 28.43  | 24.89  |  70.32 |  35 | 141  | 1451 | 12085| -
 
 <!-- # AB3DMOT
 

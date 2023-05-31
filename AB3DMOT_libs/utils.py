@@ -17,11 +17,12 @@ def Config(filename, args=None):
     cfg = edict(yaml.safe_load(listfile1))
     settings_show = listfile2.read().splitlines()
     cfg.save_embeddings = False
-    if args:
-	    cfg.alpha = args.alpha
-	listfile1.close()
-	listfile2.close()
-	return cfg, settings_show
+    listfile1.close()
+    listfile2.close()
+    if args:	cfg.alpha = args.alpha
+    return cfg, settings_show
+
+	
 
 def get_subfolder_seq(dataset, split):
 
