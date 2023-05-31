@@ -40,7 +40,7 @@ class AB3DMOT(object):
 		self.affi_process = cfg.affi_pro	# post-processing affinity
 		self.get_param(cfg, cat)
 		self.print_param()
-
+		self.split = cfg.split
 		# our contribution
 		#dinov2_vits14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
 		#dinov2_vitb14 = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
@@ -423,7 +423,9 @@ class AB3DMOT(object):
 		############################ OUR contribution ######################################################################
 		# Load saved embeddings
 		dets_embeddings = []
-		video_path = os.path.join("embeddings_val", seq_name, f"frame_{frame}.txt")
+		if 'test' in self.split: embedding_name = 'embeddings_test_split'
+		else:	embedding_name = 'embeddings_val'
+		video_path = os.path.join(embedding_name, seq_name, f"frame_{frame}.txt")
 		with open(video_path, "r") as file:
 			rows = file.readlines()
 		for row in rows:
@@ -503,8 +505,11 @@ class AB3DMOT(object):
 		################## OUR contribution ############################################################################
 		img_path = os.path.join(self.img_dir, f'{frame:06d}.png')
 		img = Image.open(img_path)
-		def _save_embeddings(seq_name, frame, embeddings):
-			folder_path = os.path.join("embeddings_val1", seq_name)
+		if 'test' in self.split:	embedding_folder = 'embeddings_test_split'
+		else:	embedding_folder = 'embeddings_val'
+
+		def _save_embeddings(seq_name, frame, embeddings, name_folder):
+			folder_path = os.path.join(name_folder, seq_name)
 			os.makedirs(folder_path, exist_ok=True)
 			file_path = os.path.join(folder_path, f"frame_{frame}.txt")
 			with open(file_path, 'a') as f:
@@ -544,4 +549,4 @@ class AB3DMOT(object):
 				embedding = np.random.random((1024,))
 			
 			dets_embd.append(embedding)
-		_save_embeddings(seq_name, frame, dets_embd)
+		_save_embeddings(seq_name, frame, dets_embd, embedding_folder)
