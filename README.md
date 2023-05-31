@@ -164,9 +164,9 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
  *Cyclist*      | 93.78  | 84.79  |  77.23 |  1  | 3    | 114  | 90   | 980.7
  *Overall*      | 89.62  | 81.71  |  74.74 |  5  | 80   | 1071 | 2821 | -
 
-#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 0.25
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), $\alpha = 0.25$
 
-Results evaluated with the 0.25 3D IoU threshold with alpha = 0.25.
+Results evaluated with the 0.25 3D IoU threshold with $\alpha = 0.25$.
 
 Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
 --------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
@@ -176,9 +176,9 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
  *Overall*      | 69.60  | 62.99  |  74.82 |  37 | 236  | 1044 | 5217 | -
 
 
-#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 0.5
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), $\alpha = 0.5$
 
-Results evaluated with the 0.25 3D IoU threshold with alpha = 0.5.
+Results evaluated with the 0.25 3D IoU threshold with $\alpha = 0.5$.
 
 Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
 --------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
@@ -187,9 +187,9 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
  *Cyclist*      | 28.63  | 22.85  |  79.02 |  15 | 31   | 38   | 987  | -
  *Overall*      | 67.51  | 48.27  |  73.82 |  30 | 296  | 1854 | 6541 | -
 
-#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), alpha = 1
+#### PointRCNN + AB3DMOT + Dinov2 (KITTI val set), $\alpha = 1$
 
-Results evaluated with the 0.25 3D IoU threshold with alpha = 1.
+Results evaluated with the 0.25 3D IoU threshold with $\alpha = 1$.
 
 Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
 --------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
