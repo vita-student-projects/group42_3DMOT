@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
 import numpy as np
 from segment_anything import sam_model_registry, SamPredictor
 
-sam_checkpoint = "weights/sam_vit_h_4b8939.pth"
+sam_checkpoint = "sam_vit_h_4b8939.pth"
 model_type = "vit_h"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"On device {device}")
