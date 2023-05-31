@@ -230,7 +230,7 @@ However, we are feel that we have grown more comfortable and proficient with wor
 Despite the difficulties, we are proud of the progress we have achieved and the insights we have gained.
 
 ### Acknowledgement
-We would like to express our gratitude to the original authors of the AB3DMOT code and paper, as it served as the foundation for our contribution. We also extend our appreciation to the team behind the DINOv2 model at Facebook for their valuable work. Additionally, we would like to acknowledge our teaching assistant, Vladimir Somers, and all other assistants who provided guidance and support throughout our project. Finally, we would like to thank our Professor Alexandre Alahi for assigning us this project and providing us with the opportunity to learn. 
+We would like to express our gratitude to the original authors of the AB3DMOT code and paper, as it served as the foundation for our contribution. We also extend our appreciation to the team behind the DINOv2 model at Facebook for their valuable work. Additionally, we would like to acknowledge our teaching assistant, Vladimir Somers, and all other assistants who provided guidance and support throughout our project. Finally, we would like to thank our Professor Alexandre Alahi for assigning us this project. 
 
 
 citation for AB3DMOT:
