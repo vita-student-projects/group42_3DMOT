@@ -4,7 +4,7 @@
 Built upon [AB3DMOT](https://github.com/xinshuoweng/AB3DMOT) and using [DINOv2](https://github.com/facebookresearch/dinov2) for extracting visual features for tracking.
 AB3DMOT, the method we built our contribution into can be found here "[3D Multi-Object Tracking: A Baseline and New Evaluation Metrics](http://www.xinshuoweng.com/papers/AB3DMOT/proceeding.pdf)".
 
-<img src="our_viz.gif" alt="GIF Example" width="800" height="300">
+<img src="dinov2-mot.gif" alt="GIF Example" width="800" height="300">
 
 ## Contribution Overview
 Our contribution is to add visual appearance re-identification to an existing mulitple 3D tracking algortihm that doesn't use visual feautres. We choose AB3DMOT ([paper](http://www.xinshuoweng.com/papers/AB3DMOT/proceeding.pdf)) as our baseline model from which we added a visual appearance functionality. To get the visual feautres from a detection, we use facebook research's visual deep model DINOv2 ([paper](https://arxiv.org/abs/2304.07193)). We calculate the similarity between detections and tracklets using the cosine similarity and uses that as cost/affinity. We then add a hyper-parameter $\alpha$ which controls the how much of our contribution to use in calculation of the cost matrix: 
