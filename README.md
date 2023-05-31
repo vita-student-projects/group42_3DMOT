@@ -57,6 +57,30 @@ NOTE: The evaluation of the results will be performed with a weighting alpha tha
 python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
 ~~~
 "In detail, running above command will generate a folder named "pointrcnn_val_H1" that includes results combined from all categories, and also folders named "pointrcnn_category_val_H1" representing results for each category. Under each result folder, "./data_0" subfolders are used for MOT evaluation, which follow the format of the KITTI Multi-Object Tracking Challenge (format definition can be found in the tracking development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_tracking.php). Also, "./trk_withid_0" subfolders are used for visualization only, which follow the format of KITTI 3D Object Detection challenge except that we add an ID in the last column."
+### Results
+
+| DINOV2 Cosine-Similarity (-1 to 1) |     |     |     |     |     |     |
+|----------------------------------|-----|-----|-----|-----|-----|-----|
+|                                  |axel1|axel2|axel3|johan1|johan2|johan3|
+|----------------------------------|-----|-----|-----|-----|-----|-----|
+| axel1                            | 1.00| 0.69| 0.88| 0.44| 0.58| 0.67|
+| axel2                            | 0.69| 1.00| 0.63| 0.45| 0.74| 0.48|
+| axel3                            | 0.88| 0.63| 1.00| 0.53| 0.57| 0.75|
+| johan1                           | 0.44| 0.45| 0.53| 1.00| 0.62| 0.52|
+| johan2                           | 0.58| 0.74| 0.57| 0.62| 1.00| 0.71|
+| johan3                           | 0.67| 0.48| 0.75| 0.52| 0.71| 1.00|
+
+| DINOv2 Euclidean-Similarity |     |     |     |     |     |     |
+|----------------------|-----|-----|-----|-----|-----|-----|
+|                      |axel1|axel2|axel3|johan1|johan2|johan3|
+|----------------------|-----|-----|-----|-----|-----|-----|
+| axel1                | 0.00|35.84|22.53|48.24|41.87|36.87|
+| axel2                |35.84| 0.00|39.57|47.87|32.98|46.45|
+| axel3                |22.53|39.57| 0.00|44.40|42.40|32.29|
+| johan1               |48.24|47.87|44.40| 0.00|39.80|44.77|
+| johan2               |41.87|32.98|42.40|39.80| 0.00|34.97|
+| johan3               |36.87|46.45|32.29|44.77|34.97| 0.00|
+
 
 #### PointRCNN + AB3DMOT (KITTI val set)
 
