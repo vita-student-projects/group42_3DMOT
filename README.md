@@ -37,17 +37,45 @@ Please add the path to the code to your PYTHONPATH in order to load the library 
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT/Xinshuo_PyToolbox
 ```
+
+## Dataset
+We used the [KITTI](http://www.cvlibs.net/datasets/kitti/eval_tracking.php) dataset. Mainly you ned left color images, velodyne point cloud data, GPS/IMU data, training labels, and camera calibration data. Furthermore, it is important that the dataset lies in the correct format in the repo:
+```
+group42_3DMOT
+├── data
+│   ├── KITTI
+│   │   │── tracking
+│   │   |   │── training
+│   │   │   │   ├──calib & velodyne & label_02 & image_02 & oxts
+│   │   │   │── testing
+│   │   │   │   ├──calib & velodyne & image_02 & oxts
+├── AB3DMOT_libs
+├── configs
+```
+If to run this on SCITAS, soft symbolic links already exists here that takes you to the correct datasets already uploaded to SCITAS.
+
+This code uses the KITTI 3D Object Detection Challenge format for the detections, but with some switch in order:
+
+Frame |   Type  |   2D BBOX (x1, y1, x2, y2)  | Score |    3D BBOX (h, w, l, x, y, z, rot_y)      | Alpha | 
+------|:-------:|:---------------------------:|:-----:|:-----------------------------------------:|:-----:|
+ 0    | 2 (car) | 726.4, 173.69, 917.5, 315.1 | 13.85 | 1.56, 1.58, 3.48, 2.57, 1.57, 9.72, -1.56 | -1.82 | 
+ 
+ More info found in the object development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d
+ 
 ## 3D Multi-Object Tracking
 TODO: Explain how we forward the embeddings of the detections in the script and store them.
+For the embeddings (feature vectors) for the detections, we choose to generate these before we actually run the tracking. We opt for this approach to save time and avoid generating embeddings with each run. We submit jobs to the SCITAS cluster for this purpose and store the embeddings in .txt files (in either the "embeddings_val" or "embeddings_test_split" folder). As a result, this implementation functions as a batch process rather than real-time, although it could be run online if executed on a sufficiently powerful computer. However, the code would require some modifications in that case.
 
-In model.py we define the function that gathers the embeddings from the detections. Etc...
-
-To save the embeddings from the KITTI dataset with the provided Point RCNN detections,run the following code. 
+To save the embeddings from the KITTI dataset with the provided Point RCNN detections, run the following code. 
 WARNING: This part was run using cuda on the SCITAS cluster. Note that this requires alot of computing power.
 ~~~shell
 python3 main.py --dataset KITTI --det_name pointrcnn --get_embeddings 
 ~~~
-To run our tracker we follow the same instructions as given by the author for AB3DMOT.
+
+In model.py we define the function that gathers the embeddings from the detections. Etc...
+
+
+To run our tracker we follow the almost the same instructions as given by the author for AB3DMOT.
 
 NOTE: The evaluation of the results will be performed with a weighting alpha that is the ratio between using the metric from AB3DMOT and Dinov2. This ratio is between 0 and 1 depending on which part is contributing the most, 0 means the default AB3DMOT metric is used and 1 means only the Dinov2 metric is used.
 
