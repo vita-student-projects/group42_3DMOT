@@ -6,6 +6,8 @@ AB3DMOT, the method we built our contribution into can be found here "[3D Multi-
 
 <img src="dinov2-mot.gif" alt="GIF Example" width="800" height="300">
 
+[YouTube link](https://youtu.be/viRUgRkz3bY) for presentation.
+
 ## Contribution Overview
 Our contribution is to add visual appearance re-identification to an existing mulitple 3D tracking algorithm that doesn't use visual features. We choose AB3DMOT ([paper](http://www.xinshuoweng.com/papers/AB3DMOT/proceeding.pdf)) as our baseline model from which we added a visual appearance functionality. To get the visual features from a detection, we use Facebook Research's visual deep model DINOv2 ([paper](https://arxiv.org/abs/2304.07193)). We calculate the similarity between detections and tracklets using the cosine similarity and uses that as cost/affinity. We then add a hyper-parameter $\alpha$ which controls the how much of our contribution to use in calculation of the cost matrix: 
 $$\text{Total cost} = (1-\alpha) \cdot \text{AB3DMOT cost} + \alpha \cdot \text{Our contribution cost}$$
@@ -103,7 +105,7 @@ python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
 ~~~
 "In detail, running above command will generate a folder named "pointrcnn_val_H1" that includes results combined from all categories, and also folders named "pointrcnn_category_val_H1" representing results for each category. Under each result folder, "./data_0" subfolders are used for MOT evaluation, which follow the format of the KITTI Multi-Object Tracking Challenge (format definition can be found in the tracking development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_tracking.php). Also, "./trk_withid_0" subfolders are used for visualization only, which follow the format of KITTI 3D Object Detection challenge except that we add an ID in the last column."
 ### Results from experiment
-Before we decided to use DINOv2 for our visual feature extraction. We examined the power of the feature representation of detections. We took 3 full-body pictures of two humans named Axel and Johan from different angles (these can be found under "experiments_im/), than ran these through two visual models: DINOv2 ([github](https://github.com/facebookresearch/dinov2), [paper](https://arxiv.org/abs/2304.07193)) and Segment-Anything ([github](https://github.com/facebookresearch/segment-anything), [paper](https://ai.facebook.com/research/publications/segment-anything/)). Both are new (of this date 31/05-2023) deep learning models developed by Facebook-research. Segment-Anything is designed to be promptable and can transfer zero-shot to new image distributions and tasks. The DINOv2 paper however, explores the idea of all-purpose visual features in computer vision and proposes a self-supervised approach for pretraining on a large curated image dataset using a ViT (Vision Transformers) model. So at first glance the two seems to be good candidates for our task. After running our test images thorugh the models, we used two different metrics to evaluate the similiarty between the images - cosine similarity and the euclidean distance. Optimum would be good similarity between images depciting the same person and bad similarty scores between images that depict different persons.
+Before we decided to use DINOv2 for our visual feature extraction. We examined the power of the feature representation of detections. We took 3 full-body pictures of two humans named Axel and Johan from different angles (these can be found under "experiments_im/), than ran these through two visual models: DINOv2 ([github](https://github.com/facebookresearch/dinov2), [paper](https://arxiv.org/abs/2304.07193)) and Segment-Anything ([github](https://github.com/facebookresearch/segment-anything), [paper](https://ai.facebook.com/research/publications/segment-anything/)). Both are new (of this date 31/05-2023) deep learning models developed by Facebook-research. Segment-Anything is designed to be promptable and can transfer zero-shot to new image distributions and tasks. The DINOv2 paper however, explores the idea of all-purpose visual features in computer vision and proposes a self-supervised approach for pretraining on a large curated image dataset using a ViT (Vision Transformers) model. So at first glance the two seems to be good candidates for our task. After running our test images through the models, we used two different metrics to evaluate the similarity between the images - cosine similarity and the euclidean distance. Optimum would be good similarity between images depciting the same person and bad similarity scores between images that depict different persons.
 
 To get the same results run experiments.py - we ran this script locally and never tried running it on SCITAS. Furthermore, you need to [download](https://github.com/facebookresearch/segment-anything#model-checkpoints) weights for the Segment-anything model (we used [ViT-H SAM model](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)) and:
 
@@ -156,7 +158,7 @@ Here is the results from this experiments:
 | johan2 |91.50|71.35|91.61|76.58 | 0.00 |96.73 |
 | johan3 |81.33|105.02|82.40|92.15 |96.73 | 0.00 |
 
-As seen in the tables, DINOv2 generated better embeddings since the cosine similarities were, in general, closer to each other for each respective image. Additionally, performing a forward pass with "Segment-Anything" takes considerably longer than with DINOv2. Hence, we choose DINOv2 for this implementation.
+As seen in the tables, DINOv2 generated better embeddings since the cosine similarities were, in general, closer to each other for each respective image. Additionally, performing a forward pass with "Segment-Anything" takes considerably longer than with DINOv2. Hence, we choose DINOv2 for this implementation with cosine similarity for our cost metric.
 ### Evaluation
 To get the evalutation metrics we run:
 
@@ -192,7 +194,7 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
 --------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
  *Car*          | 93.14  | 86.25  |  79.30 |  0  | 19   | 385  | 767  | -
  *Pedestrian*   | 69.41  | 63.65  |  66.66 |  6  | 163  | 585  | 2967 | -
- *Cyclist*      | 46.26  | 39.09  |***78.50***|  31 | 54   | 74   | 716  | -
+ *Cyclist*      | 46.26  | 39.09  |  78.50 |  31 | 54   | 74   | 716  | -
  *Overall*      | 69.60  | 62.99  |  74.82 |  37 | 236  | 1044 | 5217 | -
 
 
@@ -219,8 +221,7 @@ Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS
  *Overall*      | 28.43  | 24.89  |  70.32 |  35 | 141  | 1451 | 12085| -
 
 ## Finally
-From the results we can say that our contribution greatly decreases many of the evaluation metrics. Most notably we see a decrease in the sAMOTA (scaled Average Multi Object Tracking Accuracy) accuracy metric, especially for the Pedestrian and Cyclist categories and this is implied by the large number of false positives produced. This indicates that when using more of our contribution, the tracker prediction is prone to actually miss the ground truth when it exists. Either our contribution is too harsh with the conditions for the predictions or more likely is issues with scaling of our metric when combining the metrics. When we implemented our contribution it was discovered that AB3DMOT uses two difference metrics, General Intersection over Union (GIoU) for the car and 3D distance (dist3d) for the pedestrian and cyclist. For the car, our metric was easily implemented due to that GIoU have the same scaling as our metric (-1 to 1), but for dist3d the scaling was, for us at least, arbitrary. It was initially thought to have a scale of 0-100, and thus we scaled our metric accordingly. But when reflecting over the result, this might have been a faulty scale. This is most likely the primary cause of the large difference. Interestingly enough, we actually improved the MOTP (Multi Object Tracking Precision) precision metric for the cyclist. This gives us a hint that the tracker is more consistent with its predictions but with worse accuracy. Thus, it would be wise to carefully evaluate the actual scaling of the 3D distance metric in order to improve our results with regards to the pedestrian and cyclist. 
-
+From the results we can say that our contribution decreases many of the evaluation metrics. Most notably we see a decrease in the sAMOTA (scaled Average Multi Object Tracking Accuracy) accuracy metric, especially for the Pedestrian and Cyclist categories and this is implied by the large number of false positives produced. This indicates that when using more of our contribution, the tracker prediction is prone to actually miss the ground truth when it exists. Either our contribution is too harsh with the conditions for the predictions or more likely it is issues with scaling of our metric when combining the metrics. When we implemented our contribution it was discovered that AB3DMOT uses two difference metrics, General Intersection over Union (GIoU) for the car and 3D distance (dist3d) for the pedestrian and cyclist. For the car, our metric was easily implemented due to that GIoU have the same scaling as our metric (-1 to 1), but for dist3d the scaling was, for us at least, arbitrary. It was initially thought to have a scale of 0-100, and thus we scaled our metric accordingly. But when reflecting over the result, this might have been a faulty scale. This is most likely the primary cause of the large difference. Interestingly enough, we actually improved the MOTP (Multi Object Tracking Precision) precision metric for the cyclist. This gives us a hint that the tracker is more consistent with its predictions but with worse accuracy. Thus, it would be wise to carefully evaluate the actual scaling of the 3D distance metric in order to improve our results with regards to the pedestrian and cyclist. 
 
 We could probably improve the result if we fine-tuned the visual models on our dataset. This would be the natural next step. However, being new to projects of this magnitude, we initially found it difficult working on a project this size and to just implement the contributions we have made thus far. Another challenge has been working on SCITAS, both the author's personal computers run on windows, thus neither were epsecially comfortable in the beginning working on Linux machines, and sending jobs to the clusters seemed almost impossible. Also adding the KITTI dataset to SCITAS seemed like quite a hassle in the beginning.
 
@@ -228,8 +229,29 @@ However, we are feel that we have grown more comfortable and proficient with wor
 
 Despite the difficulties, we are proud of the progress we have achieved and the insights we have gained.
 
+### Acknowledgement
+We would like to express our gratitude to the original authors of the AB3DMOT code and paper, as it served as the foundation for our contribution. We also extend our appreciation to the team behind the DINOv2 model at Facebook for their valuable work. Additionally, we would like to acknowledge our teaching assistant, Vladimir Somers, and all other assistants who provided guidance and support throughout our project. Finally, we would like to thank our Professor Alexandre Alahi for assigning us this project and providing us with the opportunity to learn. 
 
 
+citation for AB3DMOT:
+```
+@article{Weng2020_AB3DMOT_eccvw, 
+author = {Weng, Xinshuo and Wang, Jianren and Held, David and Kitani, Kris}, 
+journal = {ECCVW}, 
+title = {{AB3DMOT: A Baseline for 3D Multi-Object Tracking and New Evaluation Metrics}}, 
+year = {2020} 
+}
+```
+
+citation for DINOv2:
+```
+@misc{oquab2023dinov2,
+  title={DINOv2: Learning Robust Visual Features without Supervision},
+  author={Oquab, Maxime and Darcet, Timothée and Moutakanni, Theo and Vo, Huy V. and Szafraniec, Marc and Khalidov, Vasil and Fernandez, Pierre and Haziza, Daniel and Massa, Francisco and El-Nouby, Alaaeldin and Howes, Russell and Huang, Po-Yao and Xu, Hu and Sharma, Vasu and Li, Shang-Wen and Galuba, Wojciech and Rabbat, Mike and Assran, Mido and Ballas, Nicolas and Synnaeve, Gabriel and Misra, Ishan and Jegou, Herve and Mairal, Julien and Labatut, Patrick and Joulin, Armand and Bojanowski, Piotr},
+  journal={arXiv:2304.07193},
+  year={2023}
+}
+```
 <!-- # AB3DMOT
 
 <!-- <b>3D Multi-Object Tracking: A Baseline and New Evaluation Metrics (IROS 2020, ECCVW 2020)</b>
