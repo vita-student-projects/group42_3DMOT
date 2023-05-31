@@ -10,6 +10,8 @@ AB3DMOT, the method we built our contribution into can be found here "[3D Multi-
 Our contribution is to add visual appearance re-identification to an existing mulitple 3D tracking algortihm that doesn't use visual feautres. We choose AB3DMOT ([paper](http://www.xinshuoweng.com/papers/AB3DMOT/proceeding.pdf)) as our baseline model from which we added a visual appearance functionality. To get the visual feautres from a detection, we use facebook research's visual deep model DINOv2 ([paper](https://arxiv.org/abs/2304.07193)). We calculate the similarity between detections and tracklets using the cosine similarity and uses that as cost/affinity. We then add a hyper-parameter $\alpha$ which controls the how much of our contribution to use in calculation of the cost matrix: 
 $$\text{Total cost} = (1-\alpha) \cdot \text{AB3DMOT cost} + \alpha \cdot \text{Our contribution cost}$$
 
+Our contribution doesn't need the 3D bounding boxes of the detections to generate the embeddings. But rather we use the 2D bounding boxes, to crop the frame into smaller images - containing only the detection - which are used to pass through the visual deep model.
+
 ## System Requirements
 
 This code has only been tested on the following combination of MAJOR pre-requisites. Please check beforehand. IMPORTANT!
@@ -90,14 +92,14 @@ NOTE: that the embeddings for the KITTI MOT validation set with the provided Poi
 
 To run our tracker we follow the almost the same instructions as given by the author for AB3DMOT.
 
-NOTE: The evaluation of the results will be performed with a weighting alpha that is the ratio between using the metric from AB3DMOT and Dinov2. This ratio is between 0 and 1 depending on which part is contributing the most, 0 means the default AB3DMOT metric is used and 1 means only the Dinov2 metric is used.
+NOTE: The evaluation of the results will be performed with a weighting $\alpha$ that is the ratio between using the metric from AB3DMOT and Dinov2. This ratio is between 0 and 1 depending on which part is contributing the most, 0 means the default AB3DMOT metric is used and 1 means only the Dinov2 metric is used.
 
-"To run our tracker on the KITTI MOT validation set with the provided PointRCNN detections." here with alpha = 0.5
+"To run our tracker on the KITTI MOT validation set with the provided PointRCNN detections." here with $\alpha = 0.5$
 ~~~shell
 python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
 ~~~
 "In detail, running above command will generate a folder named "pointrcnn_val_H1" that includes results combined from all categories, and also folders named "pointrcnn_category_val_H1" representing results for each category. Under each result folder, "./data_0" subfolders are used for MOT evaluation, which follow the format of the KITTI Multi-Object Tracking Challenge (format definition can be found in the tracking development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_tracking.php). Also, "./trk_withid_0" subfolders are used for visualization only, which follow the format of KITTI 3D Object Detection challenge except that we add an ID in the last column."
-### Results
+### Results from experiment
 Before we decided to use DINOv2 for our visual feautre extraction. We examined the power of the feature representation of detections. We took 3 full-body pictures of two humans named Axel and Johan from different angles (these can be found under "experiments_im/), than ran these through two visual models: DINOv2 ([github](https://github.com/facebookresearch/dinov2), [paper](https://arxiv.org/abs/2304.07193)) and Segemet-Anything ([github](https://github.com/facebookresearch/segment-anything), [paper](https://ai.facebook.com/research/publications/segment-anything/)). Both are new (of this date 31/05-2023) deep learning models developed by Facebook-research. Segment-Anything is designed to be promptable and can transfer zero-shot to new image distributions and tasks. The DINOv2 paper however, explores the idea of all-purpose visual features in computer vision and proposes a self-supervised approach for pretraining on a large curated image dataset using a ViT (Vision Transformers) model. So at first glance the two seems to be good candidates for our task. After running our test images thorugh the models, we used two different metrics to evaluate the similiarty between the images - cosine similarity and the euclidean distance. Optimum would be good similarity between images depciting the same person and bad similarty scores between images that depict different persons.
 
 To get the same results run experiments.py - we ran this script locally and never tried running it on SCITAS. Furthermore, you need to [download](https://github.com/facebookresearch/segment-anything#model-checkpoints) weights for the Segment-anything model (we used [ViT-H SAM model](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)) and:
@@ -107,7 +109,7 @@ pip install git+https://github.com/facebookresearch/segment-anything.git
 ~~~
 Here is the results from this experiments:
 
-DINOV2 Cosine-Similarity (-1 to 1) 
+#### DINOV2 Cosine-Similarity (-1 to 1) 
 
 |                                  |axel1|axel2|axel3|johan1|johan2|johan3|
 |----------------------------------|:----:|:----:|:----:|:----:|:----:|:----:|
@@ -118,7 +120,7 @@ DINOV2 Cosine-Similarity (-1 to 1)
 | johan2                           | 0.58| 0.74| 0.57| 0.62| 1.00| 0.71|
 | johan3                           | 0.67| 0.48| 0.75| 0.52| 0.71| 1.00|
 
-DINOv2 Euclidean-Similarity
+#### DINOv2 Euclidean-Similarity
 
 |                      |axel1|axel2|axel3|johan1|johan2|johan3|
 |----------------------|:----:|:----:|:----:|:----:|:----:|:----:|
@@ -129,7 +131,7 @@ DINOv2 Euclidean-Similarity
 | johan2               |41.87|32.98|42.40|39.80| 0.00|34.97|
 | johan3               |36.87|46.45|32.29|44.77|34.97| 0.00|
 
-SEGMENT-ANYHTING-MODEL Cosine-Similarity (-1 to 1)
+#### SEGMENT-ANYHTING-MODEL Cosine-Similarity (-1 to 1)
 
 |        |axel1|axel2|axel3|johan1|johan2|johan3|
 |--------|:---:|:---:|:---:|:----:|:----:|:----:|
@@ -140,7 +142,7 @@ SEGMENT-ANYHTING-MODEL Cosine-Similarity (-1 to 1)
 | johan2 | 0.69| 0.81| 0.69| 0.78 | 1.00 | 0.65 |
 | johan3 | 0.76| 0.59| 0.75| 0.68 | 0.65 | 1.00 |
 
-SEGMENT-ANYHTING-MODEL Euclidean-Similarity
+#### SEGMENT-ANYHTING-MODEL Euclidean-Similarity
 
 |        |axel1|axel2|axel3|johan1|johan2|johan3|
 |--------|:---:|:---:|:---:|:----:|:----:|:----:|
@@ -152,6 +154,18 @@ SEGMENT-ANYHTING-MODEL Euclidean-Similarity
 | johan3 |81.33|105.02|82.40|92.15 |96.73 | 0.00 |
 
 As seen in the tables, DINOv2 generated better embeddings since the cosine similarities were, in general, closer to each other for each respective image. Additionally, performing a forward pass with "Segment-Anything" takes considerably longer than with DINOv2. Hence, we choose DINOv2 for this implementation.
+### Evaluation
+To get the evalutation metrics we run:
+
+~~~shell
+python3 scripts/KITTI/evaluate.py pointrcnn_val_H1 1 3D 0.25
+~~~
+Which runs the evaluation on the KITTI MOT validation set with a threshold of 0.25 3D IoU.
+NOTE: To try different $\alpha$ the user must rerun
+~~~shell
+python3 main.py --dataset KITTI --det_name pointrcnn --alpha X
+~~~
+before running the evalutation script.
 
 #### PointRCNN + AB3DMOT (KITTI val set)
 
@@ -203,7 +217,7 @@ From the results we can say that our contribution ... TODO!!!
 
 We could probably improve the result if we fine-tuned the visual models on our dataset. This would be the natural next step. However, being new to projects of this magnitude, we initially found it difficult working on a project this size and to just implement the contributions we have made thus far. Another challenge has been working on SCITAS, both the author's personal computers run on windows, thus neither were epsecially comfortable in the beginning wokring on linux machines, and sending jobs to the clusters seemed almost impossible. Also adding the KITTI dataset to SCITAS seemed like quite a hassle in the beginning.
 
-However, we are feel that we have grown more comfortable and proficient with working on existing large-scale projects, working with remote connections on Linux systems, sending jobs to clusters, and managing substantial datasets. And if we would have done it again, we would probably start with fine-tuning a existing visual model. We would probably try a model with even stronger feature representations such as CLIP from OpenAI, and compare it with others. Additionally, we would try to make it truely online, and not pre-generte the embeddings before running the tracker.
+However, we are feel that we have grown more comfortable and proficient with working on existing large-scale projects, working with remote connections on Linux systems, sending jobs to clusters, and managing substantial datasets. And if we would have done it again, we would probably start with fine-tuning a existing visual model. We would probably try a model with even stronger feature representations such as CLIP from OpenAI, and compare it with others. Additionally, we would try to make it truely online, and not pre-generate the embeddings before running the tracker.
 
 Despite the difficulties, we are proud of the progress we have achieved and the insights we have gained.
 
