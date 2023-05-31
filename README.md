@@ -78,7 +78,7 @@ Frame |   Type  |   2D BBOX (x1, y1, x2, y2)  | Score |    3D BBOX (h, w, l, x, 
 
 For the embeddings (feature vectors) for the detections, we choose to generate these before we actually run the tracking. We opt for this approach to save time and avoid generating embeddings with each run. We submit jobs to the SCITAS cluster for this purpose and store the embeddings in .txt files (in either the "embeddings_val" or "embeddings_test_split" folder). As a result, this implementation functions as a batch process rather than real-time, although it could be run online if executed on a sufficiently powerful computer. However, the code would require some modifications in that case.
 
-# Data preprocessing (embedding generation)
+### Data preprocessing (embedding generation)
 
 To save the embeddings from the KITTI dataset with the provided Point RCNN detections, run the following code. 
 WARNING: This part was run using cuda on the SCITAS cluster. Note that this requires alot of computing power.
@@ -93,7 +93,7 @@ to run the test split.
 
 NOTE: that the embeddings for the KITTI MOT validation set with the provided PointRCNN detections and the test set with the provided PointRCNN detections have already been generated and can be found under "embeddings_val" and "embeddings_test_split" respectively. 
 
-# Inference
+## Inference
 
 To run our tracker we follow the almost the same instructions as given by the author for AB3DMOT.
 
