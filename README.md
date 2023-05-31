@@ -164,10 +164,13 @@ To get the evalutation metrics we run:
 python3 scripts/KITTI/evaluate.py pointrcnn_val_H1 1 3D 0.25
 ~~~
 Which runs the evaluation on the KITTI MOT validation set with a threshold of 0.25 3D IoU.
+
 NOTE: To try different $\alpha$ the user must rerun
+
 ~~~shell
 python3 main.py --dataset KITTI --det_name pointrcnn --alpha X
 ~~~
+
 before running the evalutation script.
 
 #### PointRCNN + AB3DMOT (KITTI val set)
