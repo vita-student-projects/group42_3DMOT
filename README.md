@@ -86,6 +86,15 @@ python3 main.py --dataset KITTI --det_name pointrcnn --alpha 0.5
 ~~~
 "In detail, running above command will generate a folder named "pointrcnn_val_H1" that includes results combined from all categories, and also folders named "pointrcnn_category_val_H1" representing results for each category. Under each result folder, "./data_0" subfolders are used for MOT evaluation, which follow the format of the KITTI Multi-Object Tracking Challenge (format definition can be found in the tracking development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_tracking.php). Also, "./trk_withid_0" subfolders are used for visualization only, which follow the format of KITTI 3D Object Detection challenge except that we add an ID in the last column."
 ### Results
+Before we decided to use DINOv2 for our visual feautre extraction. We examined the power of the feature representation of detections. We took 3 full-body pictures of two humans named Axel and Johan from different angles (these can be found under "experiments_im/), than ran these through two visual models: DINOv2 ([github](https://github.com/facebookresearch/dinov2), [paper](https://arxiv.org/abs/2304.07193)) and Segemet-Anything ([github](https://github.com/facebookresearch/segment-anything), [paper](https://ai.facebook.com/research/publications/segment-anything/)). Both are new (of this date 31/05-2023) deep learning models developed by Facebook-research. Segment-Anything is designed to be promptable and can transfer zero-shot to new image distributions and tasks. The DINOv2 paper however, explores the idea of all-purpose visual features in computer vision and proposes a self-supervised approach for pretraining on a large curated image dataset using a ViT (Vision Transformers) model. So at first glance the two seems to be good candidates for our task. After running our test images thorugh the models, we used two different metrics to evaluate the similiarty between the images - cosine similarity and the euclidean distance. Optimum would be good similarity between images depciting the same person and bad similarty scores between images that depict different persons.
+
+
+To get the same results run experiments.py - we ran this script locally and never tried running it on SCITAS. Furthermore, you need to [download](https://github.com/facebookresearch/segment-anything#model-checkpoints) weights for the Segment-anything model (we used [ViT-H SAM model](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)) and:
+
+~~~shell
+pip install git+https://github.com/facebookresearch/segment-anything.git
+~~~
+Here is the results from this experiments:
 
 DINOV2 Cosine-Similarity (-1 to 1) 
 
