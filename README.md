@@ -45,6 +45,8 @@ export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT
 export PYTHONPATH=${PYTHONPATH}:/home/user/workspace/code/group42_3DMOT/Xinshuo_PyToolbox
 ```
 
+NOTE: This "Install" is largely based on the [AB3DMOT install](https://github.com/xinshuoweng/AB3DMOT/blob/master/docs/INSTALL.md).
+
 ## Dataset
 We used the [KITTI](http://www.cvlibs.net/datasets/kitti/eval_tracking.php) dataset. Mainly you ned left color images, velodyne point cloud data, GPS/IMU data, training labels, and camera calibration data. Furthermore, it is important that the dataset lies in the correct format in the repo:
 ```
@@ -69,6 +71,7 @@ Frame |   Type  |   2D BBOX (x1, y1, x2, y2)  | Score |    3D BBOX (h, w, l, x, 
  
  More info found in the object development toolkit here: http://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d
  
+ NOTE: This dataset setup is from [AB3DMOT KITTI dataset setup](https://github.com/xinshuoweng/AB3DMOT/blob/master/docs/KITTI.md)
 ## 3D Multi-Object Tracking
 
 For the embeddings (feature vectors) for the detections, we choose to generate these before we actually run the tracking. We opt for this approach to save time and avoid generating embeddings with each run. We submit jobs to the SCITAS cluster for this purpose and store the embeddings in .txt files (in either the "embeddings_val" or "embeddings_test_split" folder). As a result, this implementation functions as a batch process rather than real-time, although it could be run online if executed on a sufficiently powerful computer. However, the code would require some modifications in that case.
@@ -169,7 +172,7 @@ before running the evalutation script.
 
 #### PointRCNN + AB3DMOT (KITTI val set)
 
-Results evaluated with the 0.25 3D IoU threshold:
+Results evaluated with the 0.25 3D IoU threshold (BASELINE):
 
 Category       | sAMOTA |  MOTA  |  MOTP  | IDS | FRAG |  FP  |  FN  |  FPS 
 --------------- |:------:|:------:|:------:|:---:|:----:|:----:|:----:|:----:|
