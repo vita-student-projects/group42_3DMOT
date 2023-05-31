@@ -3,7 +3,7 @@
 <b>3D Multi-Object Tracking: for DLAV CIVIL-459 by Johan Lagerby and Axel Englund</b>
 Built upon [AB3DMOT](https://github.com/xinshuoweng/AB3DMOT) and using [DINOv2](https://github.com/facebookresearch/dinov2) for extracting visual features for tracking.
 
-<img src="our_viz.gif" alt="GIF Example" style="max-width: 1000px; max-height: 500px;">
+<img src="our_viz.gif" alt="GIF Example" style="max-width: 500px; max-height: 500px;">
 
 ## System Requirements
 
